@@ -1,0 +1,51 @@
+{% extends 'company/base.html' %}
+
+{% block content %}
+
+
+        <h1 class='posttitle loader'>{{ company.title }}</h1>
+
+        {% if company.published_date %}
+            <div class="date postdate">
+                {{ company.published_date }}
+            </div>
+
+        {% else %}
+            <a class="btn btn-default" href="{% url 'company_publish' pk=company.pk %}">Publish</a>
+        {% endif %}
+
+      <p class='postcontent' >{{ post.text|safe|linebreaksbr }}</p>
+
+
+      {% if user.is_authenticated %}
+
+          <a class="btn btn-primary" href="{% url 'company_remove' pk=company.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+      {% endif %}
+
+
+
+  <hr>
+  <a class="btn btn-primary btn-comment" href="{% url 'add_department_to_company' pk=company.pk %}">Add department</a>
+  <div class="container">
+
+
+  {% for department in company.departments.all %}
+  <br>
+      {% if user.is_authenticated  %}
+
+              {{ department.created_date }}
+              {% if not department.approved_comment %}
+                  <a class="btn btn-default" href="{% url 'department_remove' pk=department.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                  <a class="btn btn-default" href="{% url 'department_approve' pk=department.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+              {% endif %}
+
+          <p>{{ department.text|safe|linebreaks }}</p>
+          <p>Created by: <strong>{{ department.author }}</strong></p>
+
+      {% endif %}
+  {% empty %}
+      <p>No Department Created Yet.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
